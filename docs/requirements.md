@@ -39,6 +39,8 @@ Cần duyệt và cấp tài khoản cho hộ (đảm bảo đúng người tron
 - Admin chia đơn lớn cho nhiều hộ
 - Upload nhiều ảnh + resize phía backend
 - Tin cộng đồng: admin đăng trực tiếp + artisan gửi bài PR chờ duyệt
+- Trải nghiệm nhập liệu: validate inline, tự động điền, gợi ý, định dạng và chuyển đổi giá trị
+- URL slug + điều hướng SPA, trang 404, redirect 301 khi đổi slug
 
 **Ngoài V1 (Won't):**
 - Thanh toán online
@@ -177,6 +179,32 @@ Priority theo MoSCoW: Must / Should / Could / Won't.
   - Buyer refresh → thấy cập nhật mới nhất
 - **Không cần:** realtime websocket, push notification, dự đoán thời gian xong
 
+### F13. Trải nghiệm nhập liệu — Must
+- **Ai dùng:** cả 3 vai trò
+- **Làm gì:** kiểm tra hợp thức ngay khi nhập, tự động điền, gợi ý, định dạng và chuyển đổi giá trị
+- **Tiêu chí nghiệm thu:**
+  - Lỗi hiện dưới từng trường, không dùng popup chung; nút submit bị chặn khi còn lỗi
+  - Chọn sản phẩm mẫu → tự điền phân loại + đơn vị; chọn hộ → tự điền địa chỉ
+  - Autocomplete gợi ý khi gõ tên hộ / phân loại / sản phẩm; chọn được bằng bàn phím
+  - Tự sinh slug từ tên (bỏ dấu, thay khoảng trắng bằng `-`), cho phép sửa
+  - Giá hiển thị `150.000 ₫`, khi gửi API là số nguyên `150000`
+  - Chuyển đổi đơn vị số lượng (`kg ↔ chiếc`) khi chọn loại đơn vị khác
+  - Ngày nhập `dd/mm/yyyy`, hiển thị đúng định dạng Việt; API dùng ISO
+  - Email và số điện thoại được kiểm tra định dạng + chuẩn hoá khoảng trắng
+- **Không cần:** gợi ý bằng AI, chuyển đổi tiền tệ, nhập bằng giọng nói
+
+### F14. URL & điều hướng — Must
+- **Ai dùng:** tất cả, đặc biệt khi quét QR và khi gửi link cho người khác
+- **Làm gì:** URL đọc được, không có `#`, không lộ ID kỹ thuật; điều hướng không tải lại trang
+- **Tiêu chí nghiệm thu:**
+  - URL dạng slug: `/ho-gia-dinh/xuong-gom-men-lam`, `/san-pham/bat-trangg-men-lam`
+  - Trang chi tiết tải trực tiếp bằng URL (F5 refresh vẫn mở đúng) — Nginx `try_files` + SPA fallback
+  - QR dùng `/p/{token}` (token, không slug) → đổi tên sản phẩm không làm hỏng QR đã in
+  - Đổi slug → slug cũ trả 301 về slug mới
+  - URL không tồn tại → trang 404 riêng, có link về trang chủ (không trắng trang, không lỗi 500)
+  - Điều hướng giữa các trang chỉ dùng XHR/fetch, không tải lại toàn trang (rubric #4)
+- **Không cần:** URL đa ngôn ngữ, pretty-print JSON, SEO nâng cao (sitemap, structured data)
+
 ## 5. Luồng nghiệp vụ chính
 
 ### 5.1 Luồng báo giá
@@ -259,6 +287,22 @@ Buyer xem timeline: công đoạn nào xong, lúc nào, ai cập nhật, ảnh m
 
 (4 tiêu chí đầu là điều kiện demo tối thiểu.)
 
+### 7.1 Đối chiếu rubric của giảng viên
+
+| # | Tiêu chí rubric | Hệ số | Đáp ứng ở đâu |
+|---|---|---|---|
+| 1 | Chức năng và các features đã cài đặt | **0.35** | §4 F1–F14 + §7 ở trên |
+| 2 | Thiết kế: logic, dễ sử dụng | 0.10 | §5 luồng, `docs/architecture.md` §5 (máy trạng thái), `docs/design-system.md` §5 (4 trạng thái UI) |
+| 3 | Giao diện responsive, đẹp, hiện đại, bản sắc thương hiệu | **0.20** | `docs/design-system.md` (brand, palette, typography, component, responsive) |
+| 4 | Hiệu năng: fetch/AJAX, không tải lại, JSON API, cập nhật DOM | 0.10 | F14 (không tải lại), `docs/architecture.md` §2, `docs/api.md` (JSON), TanStack Query |
+| 5 | Phong cách lập trình: pattern, tách UI/nghiệp vụ, tổ chức gói, chú thích | 0.05 | `docs/architecture.md` §12 (design patterns) + §3 (cấu trúc repo) |
+| 6 | Xử lý nhập liệu: kiểm tra, tự động điền, gợi ý, chuyển đổi | 0.05 | F13 |
+| 7 | An ninh: xác thực, phiên, truy cập, mã hoá | 0.05 | F1, F2, `docs/architecture.md` §9, `.opencode/references/security-checklist.md` |
+| 8 | Viết lại / định tuyến URL | 0.05 | F14 |
+| 9 | CSDL hướng đối tượng + độc lập CSDL | 0.05 | `docs/architecture.md` §13 |
+
+**Tổng hệ số = 1.00.**
+
 ## 8. Câu hỏi & điều đã chốt
 
 ### 8.1 Đã chốt (2026-11-16)
@@ -288,6 +332,7 @@ Buyer xem timeline: công đoạn nào xong, lúc nào, ai cập nhật, ảnh m
 | 2026-11-16 | 1.2 | Chốt deadline 4 tuần, dùng GitHub, demo trên máy cá nhân, không tích hợp thanh toán thật; thêm lịch 4 tuần ở §6 | Nhóm |
 | 2026-11-16 | 1.3 | Chốt domain làng gốm Bát Tràng; thêm `docs/domain-battrang.md`; đồng bộ công đoạn gốm ở F4/F12 | Nhóm |
 | 2026-11-16 | 1.4 | Chốt stack (ADR-001) + Nginx/tên miền công khai (ADR-002); thêm `docs/architecture.md`, `docs/api.md`, `docs/demo-script.md`, `tasks/todo.md`; §6 cập nhật demo qua domain + phương án offline | Nhóm |
+| 2026-11-16 | 1.5 | Có rubric của giảng viên (9 tiêu chí, hệ số 1.00): thêm F13 (nhập liệu), F14 (URL/điều hướng), §7.1 đối chiếu rubric, `docs/design-system.md` | Nhóm |
 
 ## 10. Backlog V2 (chưa làm)
 

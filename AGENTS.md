@@ -68,14 +68,15 @@ Dự án web cho Ban quản lý làng nghề (INT3306, team 3, demo trực tiế
 - Khi agent tạo commit/PR phải nêu: đổi file nào, vì sao, cách kiểm chứng
 
 ## Tham chiếu tài liệu (đọc theo thứ tự khi làm việc mới)
-1. `docs/requirements.md` — cần làm gì (§4), tiêu chí nghiệm thu (§7), thay đổi đã chốt (§8, §9)
-2. `docs/architecture.md` — ERD, máy trạng thái, luồng, quy tắc concurrency
-3. `docs/api.md` — contract endpoint
-4. `docs/domain-battrang.md` — ngữ cảnh nghiệp vụ gốm, dữ liệu mẫu
-5. `docs/demo-script.md` — kịch bản demo + câu hỏi dự kiến
-6. `docs/decisions/ADR-00N-*.md` — quyết định đã chốt, không sửa lịch sử
-7. `CONSTRAINTS.md` — ngưỡng chất lượng
-8. `tasks/todo.md` — việc đang làm
+1. `docs/requirements.md` — cần làm gì (§4), tiêu chí nghiệm thu (§7), đối chiếu rubric (§7.1), thay đổi đã chốt (§9)
+2. `docs/architecture.md` — ERD, máy trạng thái, luồng, design patterns (§12), độc lập CSDL + URL (§13)
+3. `docs/design-system.md` — bản sắc, palette, typography, component, responsive (rubric #3)
+4. `docs/api.md` — contract endpoint
+5. `docs/domain-battrang.md` — ngữ cảnh nghiệp vụ gốm, dữ liệu mẫu
+6. `docs/demo-script.md` — kịch bản demo + câu hỏi dự kiến
+7. `docs/decisions/ADR-00N-*.md` — quyết định đã chốt, không sửa lịch sử
+8. `CONSTRAINTS.md` — ngưỡng chất lượng
+9. `tasks/todo.md` — việc đang làm
 
 ## Tham chiếu kỹ thuật
 - Skill domain references: `.opencode/references/*.md`

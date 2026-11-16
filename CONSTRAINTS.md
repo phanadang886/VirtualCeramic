@@ -82,6 +82,23 @@ Các quy tắc này kiểm tra thủ công hoặc bằng lệnh shell — chưa 
 
 ---
 
+## Kiểm tra hướng rubric (thủ công — trước buổi thi / mỗi PR)
+
+| Quy tắc | Kiểm tra bằng | Khi nào |
+|---------|---------------|---------|
+| Điều hướng không tải lại toàn trang | DevTools → Network → lọc Fetch/XHR; request `document` chỉ 1 lần | trước demo |
+| URL không có `#`, không lộ UUID | mở 5 route chính: `/`, `/san-pham/{slug}`, `/ho-gia-dinh/{slug}`, `/ban-do`, `/p/{token}` | trước demo |
+| Slug unique; đổi slug trả 301 | đổi slug 1 sản phẩm, mở slug cũ | khi làm F14 |
+| Không hardcode màu / font / spacing ngoài token | grep hex và `text-[` trong `frontend/src` | mỗi PR FE |
+| Mỗi trang có đủ 4 trạng thái: loading, rỗng, lỗi, có dữ liệu | duyệt từng trang ở 320px và 1440px | mỗi PR FE |
+| Lỗi validate hiện dưới từng field, không popup chung | submit form sai 3 trường | mỗi PR FE |
+| API trả JSON (trừ ảnh/QR) | `curl -H "Accept: application/json"` | mỗi PR BE |
+| Không dùng `JSONB`, `pg_trgm`, `ARRAY`, `ENUM` native | grep trong `backend/app/models/` | mỗi PR BE |
+| Schema tạo được trên SQLite (kiểm chứng độc lập CSDL) | `pytest tests/test_schema_portable.py` | CI |
+| Có ≥ 1 chi tiết nhận dạng thương hiệu trên mọi trang chính | review UI theo `docs/design-system.md` §1 | trước demo |
+
+---
+
 ## Measured, not yet enforced (ratchet)
 
 Đo một lần khi có code rồi ghi vào đây. Mọi check so với giá trị đã ghi, không so với mơ ước. Số tốt lên thì cập nhật; số tụt xuống thì đó là phát hiện.
@@ -173,3 +190,4 @@ Không phải kiểm tra tự động, nhưng là đường đỏ về mặt ngh
 |------|----------|------|
 | 2026-11-16 | Phiên bản đầu. Floor + 4 chiều kiểm tra (coverage, security, perf, a11y) | Nhóm |
 | 2026-11-16 | Thêm ràng buộc hạ tầng: `PUBLIC_BASE_URL`, port mở, rate limit, cookie secure, cert hạn, `.env` | Nhóm |
+| 2026-11-16 | Thêm 10 kiểm tra hướng rubric: không reload, URL slug, token thiết kế, 4 trạng thái UI, lỗi theo field, JSON API, độc lập CSDL | Nhóm |

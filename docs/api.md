@@ -56,6 +56,26 @@
 | 422 | `INVALID_QUANTITY` | nghiệp vụ không hợp lệ (số lượng vượt kho) |
 | 429 | `RATE_LIMITED` | quá `rate=5r/m` ở `/api/auth/login` |
 
+**Lỗi validate theo trường** (rubric #6 — FE gắn lỗi trực tiếp vào field):
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Dữ liệu không hợp lệ.",
+    "details": {
+      "fields": {
+        "email": "Email không đúng định dạng",
+        "quantity": "Số lượng phải lớn hơn 0",
+        "deadline": "Hạn giao phải sau hôm nay"
+      }
+    }
+  }
+}
+```
+
+Quy tắc: `details.fields` là map `tên_trường → thông báo tiếng Việt`. FE hiển thị dưới đúng field, không popup chung.
+
 ## Ma trận vai trò
 
 Ký hiệu: ● bắt buộc · ○ tùy chọn · — không được
@@ -334,7 +354,43 @@ Body:
 
 ---
 
-## 10. Ràng buộc nghiệp vụ (validate ở tầng service)
+## 10. Gợi ý, slug & tra cứu theo URL (rubric #6, #8)
+
+### Autocomplete (F13)
+
+| Endpoint | Method | Trả về |
+|---|---|---|
+| `/api/suggest/workshops?q=xuong` | GET | `[{ "id", "name", "slug" }]` tối đa 10 |
+| `/api/suggest/categories?q=gom` | GET | `[{ "id", "name", "slug" }]` |
+| `/api/suggest/products?q=bat` | GET | `[{ "id", "name", "slug", "workshop_name" }]` |
+
+- `q` ≥ 2 ký tự; không phân biệt hoa thường, không phân biệt dấu (dùng `unaccent`-style fold ở tầng Python nếu CSDL không hỗ trợ)
+- Công khai (không cần đăng nhập) — dùng cho form tìm kiếm và form tạo đơn
+- Trả tối đa 10 kết quả; sắp theo độ khớp đầu chuỗi trước
+
+### Tra cứu theo slug (F14)
+
+| Endpoint | Method | Ghi chú |
+|---|---|---|
+| `/api/products/by-slug/{slug}` | GET | công khai, chỉ `published` |
+| `/api/workshops/by-slug/{slug}` | GET | công khai |
+| `/api/news/by-slug/{slug}` | GET | công khai, chỉ `published` |
+| `/api/orders/by-code/{code}` | GET | chỉ chủ đơn hoặc admin, `code` dạng `VC-2026-0001` |
+
+Slug không tồn tại → **301** nếu có trong `slug_redirects`, ngược lại **404**.
+
+### Quy tắc định dạng (FE + BE phải khớp)
+
+| Trường | Nhập | Gửi API | Hiển thị |
+|---|---|---|---|
+| Giá | `150.000` hoặc `150000` | `150000` (integer VND) | `150.000 ₫` |
+| Ngày | `20/11/2026` | `2026-11-20` | `20/11/2026` |
+| Số lượng | `5.000` | `5000` | `5.000` |
+| Slug | tự sinh từ tên, cho sửa | `bat-trangg-men-lam` | — |
+| Email | chuẩn hoá khoảng trắng, lowercase | | |
+| Số điện thoại | `0912 345 678` | `0912345678` | `0912 345 678` |
+
+## 11. Ràng buộc nghiệp vụ (validate ở tầng service)
 
 | Quy tắc | Endpoint liên quan |
 |---|---|
@@ -347,9 +403,14 @@ Body:
 | Công đoạn trước phải `done` trước khi đánh dấu `done` | order stages |
 | Tổng quantity các lot = quantity order | chia đơn |
 | Artisan chưa `active` không được tạo sản phẩm / chào giá | nhiều |
+| Slug unique toàn hệ thống; đổi slug phải ghi `slug_redirects` để trả 301 | sản phẩm, hộ, tin |
+| `orders.code` unique, dạng `VC-YYYY-NNNN`, không đổi sau khi tạo | đơn hàng |
+| Giá và số lượng là số nguyên ≥ 0; không nhận chuỗi có dấu phân cách | sản phẩm, đơn hàng |
+| Mọi response là JSON (trừ file ảnh / QR PNG) — không trả HTML | toàn bộ API |
 
-## 11. Lịch sử
+## 12. Lịch sử
 
 | Ngày | Thay đổi | Người |
 |---|---|---|
 | 2026-11-16 | Phiên bản 1.0: 9 nhóm endpoint, ma trận vai trò, định dạng lỗi, quy tắc nghiệp vụ | Nhóm |
+| 2026-11-16 | Phiên bản 1.1 (theo rubric): thêm §10 autocomplete + slug + định dạng; lỗi validate theo trường; `orders/by-code` | Nhóm |

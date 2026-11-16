@@ -17,6 +17,10 @@ Cách dùng: mỗi PR phải gắn với 1 mục ở đây và 1 tiêu chí ở 
 | T1.6 | Auth: JWT cookie httpOnly, argon2, dependency `get_current_user`, phân quyền 3 vai trò | | dòng 1 | [ ] |
 | T1.7 | Cấu hình Nginx + HTTPS + `PUBLIC_BASE_URL` + QR base URL | | — | [ ] |
 | T1.8 | Script seed dữ liệu Bát Tràng (5 hộ, 40-60 sản phẩm, 4 đơn, 5 ghim, 4 tin) | | — | [ ] |
+| T1.9 | Design tokens (`design-tokens.ts`, `tailwind.config.ts`, font Playfair + Be Vietnam Pro subset vietnamese) theo `docs/design-system.md` | | — | [ ] |
+| T1.10 | Áp design system vào khung UI: layout, nav, button, card, 4 trạng thái | | — | [ ] |
+| T1.11 | Test độc lập CSDL: tạo schema + CRUD cơ bản trên SQLite | | — | [ ] |
+| T1.12 | Ghi §12 pattern + quy ước code vào `docs/architecture.md` (đã có) và thống nhất với nhóm | | — | [x] |
 
 ## Tuần 2 — Artisan + Buyer cơ bản
 
@@ -31,6 +35,8 @@ Cách dùng: mỗi PR phải gắn với 1 mục ở đây và 1 tiêu chí ở 
 | T2.7 | Bản đồ: react-leaflet, ghim, popup, tile cache | | dòng 8 | [ ] |
 | T2.8 | Admin duyệt/từ chối hộ + audit log | | dòng 1 | [ ] |
 | T2.9 | Tin cộng đồng: admin đăng trực tiếp, artisan gửi bài chờ duyệt | | dòng 7 | [ ] |
+| T2.10 | F13 nhập liệu: autocomplete hộ/sản phẩm/phân loại, tự điền phân loại + đơn vị, format giá/ngày/điện thoại, lỗi theo field | | — | [ ] |
+| T2.11 | F14 URL: slug sản phẩm/hộ/tin, `/p/{token}` cho QR, SPA fallback, trang 404, 301 khi đổi slug | | — | [ ] |
 
 ## Tuần 3 — Nghiệp vụ lõi
 
@@ -55,6 +61,8 @@ Cách dùng: mỗi PR phải gắn với 1 mục ở đây và 1 tiêu chí ở 
 | T4.6 | Chạy kịch bản A và B ít nhất 1 lần mỗi kịch bản | | — | [ ] |
 | T4.7 | Quay video dự phòng 3 phút | | — | [ ] |
 | T4.8 | Kiểm tra checklist trước buổi thi (`docs/demo-script.md` §1) | | — | [ ] |
+| T4.9 | Tập 4 thao tác nhỏ ăn điểm rubric (`docs/demo-script.md` §4.1): autocomplete, Network không reload, URL slug, chi tiết bản sắc | | — | [ ] |
+| T4.10 | Rà 10 kiểm tra hướng rubric trong `CONSTRAINTS.md` | | — | [ ] |
 
 ## Ngoài V1 (backlog)
 

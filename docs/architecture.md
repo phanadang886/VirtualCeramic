@@ -209,6 +209,7 @@ erDiagram
 
     ORDERS {
         uuid id PK
+        string code UK "VC-YYYY-NNNN"
         uuid quote_request_id FK
         uuid buyer_id FK
         decimal total_amount
@@ -254,7 +255,14 @@ erDiagram
         string action
         string entity_type
         uuid entity_id
-        jsonb meta
+        json meta
+        timestamptz created_at
+    }
+
+    SLUG_REDIRECTS {
+        string old_slug PK
+        string entity_type "product|workshop|news"
+        uuid entity_id
         timestamptz created_at
     }
 ```
@@ -274,6 +282,8 @@ erDiagram
 | `order_stages` | unique `(order_lot_id, stage_item_id)`; chỉ công đoạn `todo|doing` được chuyển sang `done` |
 | `news_posts` | `workshop_id` null = admin đăng trực tiếp |
 | `audit_logs` | **append-only**, không có UPDATE/DELETE. Ghi cho: duyệt/từ chối hộ, chuyển trạng thái quote, chuyển trạng thái order, duyệt/từ chối tin |
+| `slug_redirects` | `old_slug` là PK; khi đổi slug thì ghi slug cũ → 301. Chỉ admin/owner đổi slug được |
+| `orders.code` | `UNIQUE`, dạng `VC-YYYY-NNNN` — dùng trong URL thay UUID (xem §13) |
 
 ### Index cần có (và lý do)
 
@@ -282,7 +292,7 @@ erDiagram
 | `products(workshop_id)` | lọc danh mục theo hộ — F6 |
 | `products(category_id)` | lọc theo phân loại — F6 |
 | `products(status)` + `products(created_at DESC)` | danh mục + sắp xếp mới nhất — F6 |
-| `products(name)` — `pg_trgm` GIN | tìm kiếm tên nhanh — F6 (yêu cầu ≤1s với 200 sản phẩm) |
+| `products(name)` | tìm kiếm tên — F6. Dùng `ILIKE` ở V1 để giữ **độc lập CSDL**; `pg_trgm` GIN chỉ là tối ưu sau (xem §13) |
 | `workshops(lat, lng)` | truy vấn ghim bản đồ theo vùng — F7 |
 | `bids(quote_request_id)` | danh sách báo giá của 1 đơn — F8 |
 | `bids(workshop_id, created_at DESC)` | "đơn của tôi" — F8 |
@@ -484,7 +494,102 @@ Quy tắc bắt buộc: **mọi thao tác đổi trạng thái nằm trong trans
 
 Chi tiết cấu hình: `docs/decisions/ADR-002-nginx-public-dns.md`.
 
-## 12. Câu hỏi còn mở
+## 12. Design patterns & quy ước code
+
+Phục vụ rubric #5 (phong cách lập trình). Mỗi pattern ghi rõ **dùng ở đâu** — không nêu tên suông.
+
+| Pattern | Dùng ở đâu | Vì sao |
+|---|---|---|
+| **Layered / Service layer** | `routers/` → `services/` → `models/` | tách HTTP khỏi nghiệp vụ; test service không cần HTTP |
+| **Strategy** | `services/quote_machine.py` — bảng chuyển trạng thái + hàm kiểm tra | thêm trạng thái mới không sửa router; 1 chỗ duy nhất quyết định hợp lệ |
+| **Factory** | `services/qr_service.py` (sinh QR), `services/image_pipeline.py` (resize) | gom cấu hình vào 1 chỗ, dễ thay |
+| **Dependency Injection** | FastAPI `Depends`: `get_session`, `get_current_user`, `require_role(...)` | route không tự tạo session/đọc token |
+| **Repository** | chỉ cho query phức tạp: tìm kiếm, bản đồ, thống kê | tránh rải SQL khắp nơi |
+| **DTO / Schema** | `schemas/` (Pydantic) | biên giới dữ liệu rõ ràng, không trả ORM object ra ngoài |
+| **Observer (nhẹ)** | audit log qua 1 hàm `log_action()` gọi trong service | không phụ thuộc thư viện ngoài |
+
+**Quy ước code**
+
+| Quy ước | Nội dung |
+|---|---|
+| Đặt tên Python | `snake_case`; class `PascalCase`; hằng `UPPER_SNAKE` |
+| Đặt tên TypeScript | `camelCase` biến/hàm, `PascalCase` component/type |
+| Router | ≤ 150 dòng, không query DB, không chứa `if status == ...` |
+| Service | ≤ 300 dòng/file, có docstring nêu **WHY** + invariant |
+| Hàm | ≤ 50 dòng; nếu dài hơn → tách |
+| Comment | chỉ giải thích **tại sao** và ràng buộc; không lặp lại code |
+| Docstring | `"""Chuyển trạng thái quote. Gọi trong transaction; khoá dòng quote_requests."""` |
+| Type hint | bắt buộc cho public function (BE) và props (FE) |
+| Import | tuyệt đối (`from app.services...`), không `..` |
+
+**Ví dụ comment đúng/sai**
+
+```python
+# Sai: lặp lại code
+# tăng version lên 1
+product.version += 1
+
+# Đúng: giải thích lý do
+# Tăng version để phát hiện ghi đè đồng thời; client phải gửi version cũ.
+product.version += 1
+```
+
+## 13. Độc lập CSDL & định tuyến URL
+
+### 13.1 Độc lập CSDL (rubric #9)
+
+Yêu cầu của rubric: "Thao tác CSDL theo lập trình hướng đối tượng và độc lập CSDL". Cách đáp ứng:
+
+| Quy tắc | Cụ thể |
+|---|---|
+| Chỉ dùng ORM | mọi thao tác qua SQLAlchemy model; không viết SQL chuỗi trong router/service |
+| Kiểu dữ liệu portable | `String`, `Text`, `Integer`, `Numeric`, `Boolean`, `DateTime(timezone=True)`, `Uuid`, `JSON` — **không** `JSONB`, không `ARRAY`, không `ENUM` native Postgres |
+| Tránh hàm đặc thù | tìm kiếm dùng `ILIKE` (portable), **không** `pg_trgm` ở V1. `pg_trgm` chỉ là tối ưu sau, ghi rõ khi thêm |
+| Ngoại lệ duy nhất | `SELECT ... FOR UPDATE` (khoá bản ghi) — Postgres-specific, **cô lập trong `services/quote_machine.py`** và `services/order_service.py`, có comment lý do |
+| Migration | Alembic, không viết DDL thủ công; không dùng `server_default` đặc thù Postgres |
+| Kiểm chứng | test tạo schema + CRUD cơ bản chạy trên **SQLite** (smoke test) để chứng minh tính portable; test concurrency chạy trên Postgres |
+
+Nếu giảng viên hỏi "hệ thống có phụ thuộc PostgreSQL không?" → trả lời: tầng nghiệp vụ độc lập (ORM + kiểu portable), chỉ 2 chỗ dùng `FOR UPDATE` cho khoá bản ghi và được cô lập; đổi sang CSDL khác chỉ cần sửa 2 chỗ đó.
+
+### 13.2 Định tuyến URL (rubric #8)
+
+Không dùng `#` (hash routing). URL đọc được, tiếng Việt không dấu.
+
+| Route | Ví dụ | Ghi chú |
+|---|---|---|
+| Trang chủ | `/` | |
+| Danh mục theo hộ | `/ho-gia-dinh/{workshop_slug}` | |
+| Danh mục theo phân loại | `/danh-muc/{category_slug}` | |
+| Chi tiết sản phẩm | `/san-pham/{product_slug}` | |
+| Trang QR công khai | `/p/{token}` | token uuid, không slug — QR đã in không hỏng khi đổi tên |
+| Bản đồ | `/ban-do` | |
+| Tin cộng đồng | `/tin/{news_slug}` | |
+| Chi tiết đơn (buyer) | `/don-hang/{order_code}` | `VC-2026-0001` |
+| Khu artisan | `/xuong/...` | tránh dấu trong URL |
+| Khu admin | `/quan-tri/...` | |
+| Đăng nhập / đăng ký | `/dang-nhap`, `/dang-ky` | |
+
+**Quy tắc slug**
+
+- Sinh từ tên: bỏ dấu tiếng Việt, `đ → d`, chữ thường, khoảng trắng → `-`, bỏ ký tự đặc biệt
+- Unique toàn hệ thống; trùng → thêm hậu tố `-2`, `-3`
+- Cho phép người dùng sửa slug; khi đổi → ghi `slug_redirects`, slug cũ trả **301**
+- Không đổi slug tự động khi đổi tên (tránh vỡ link đã chia sẻ)
+
+**SPA fallback (bắt buộc)**
+
+```nginx
+location / { try_files $uri $uri/ /index.html; }
+```
+
+Thiếu dòng này → refresh ở `/san-pham/abc` trả 404 từ Nginx (rubric #8 và #4 đều mất điểm).
+
+**404**
+
+- Route không tồn tại → component `NotFound` + link về trang chủ
+- API trả `{ "error": { "code": "NOT_FOUND", ... } }`, FE hiển thị `ErrorState`, không trắng trang
+
+## 14. Câu hỏi còn mở
 
 | Câu hỏi | Chặn gì | Chốt khi |
 |---|---|---|
@@ -494,8 +599,9 @@ Chi tiết cấu hình: `docs/decisions/ADR-002-nginx-public-dns.md`.
 | Công đoạn mặc định cho từng nghề | seed `stage_template_items` | Trước khi code F12 |
 | Có giới hạn số ảnh/sản phẩm không? | Validate | Khi code F10 |
 
-## 13. Lịch sử
+## 15. Lịch sử
 
 | Ngày | Thay đổi | Người |
 |---|---|---|
 | 2026-11-16 | Phiên bản 1.0: sơ đồ tổng thể, ERD, máy trạng thái, 6 luồng chính, quy tắc concurrency, biến môi trường | Nhóm |
+| 2026-11-16 | Phiên bản 1.1 (theo rubric): thêm §12 design patterns + quy ước code, §13 độc lập CSDL + định tuyến URL; thay `JSONB` → `JSON`, bỏ `pg_trgm` khỏi V1; thêm `slug_redirects` và `orders.code` | Nhóm |

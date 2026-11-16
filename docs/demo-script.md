@@ -79,6 +79,19 @@ Mọi màn hình demo có nhãn nhỏ: **"Dữ liệu trong bản demo là dữ 
 **Cách kết (1 câu):**
 > "11 tiêu chí nghiệm thu trong `docs/requirements.md` đều đã chạy trực tiếp, đây là bảng điều khiển đơn hàng."
 
+### 4.1 Bốn thao tác nhỏ để ăn điểm rubric
+
+Lồng vào các bước trên, mỗi thao tác ~10 giây, không cần nói dài:
+
+| Thao tác | Chèn vào bước | Chứng minh rubric |
+|---|---|---|
+| Gõ 2 ký tự vào ô tìm hộ → danh sách gợi ý hiện ra → chọn bằng phím ↓ + Enter | Bước 7 (tạo đơn) | #6 xử lý nhập liệu |
+| Mở DevTools → Network → điều hướng 2 trang → chỉ thấy request `fetch/xhr`, không có request `document` mới | Bước 5 hoặc 6 | #4 fetch/AJAX, không tải lại |
+| Copy URL `/san-pham/bat-trangg-men-lam` → dán sang tab mới → trang vẫn mở đúng | Bước 4 hoặc 5 | #8 định tuyến URL |
+| Chỉ vào 1 chi tiết: đường viền men lam + tiêu đề serif + ảnh tràn viền | Bước 1 | #3 bản sắc thương hiệu |
+
+Nếu thầy hỏi "sao biết không tải lại?" → mở Network, lọc `Doc`, chỉ có 1 request lúc đầu.
+
 ## 5. Kịch bản B — offline (khi mạng chết)
 
 Kích hoạt khi: domain không resolve, VM tắt, mạng trường chặn, hoặc thầy yêu cầu thử ở máy nhóm.
@@ -129,6 +142,11 @@ Nếu cả kịch bản B cũng hỏng → dùng video dự phòng (quay sẵn 3
 | "Demo trên máy nào?" | Máy cá nhân nhóm + máy ảo Linux chạy public domain; nếu thầy muốn, chạy trên máy giảng viên bằng kịch bản B. |
 | "Có làm CI/CD không?" | GitHub Actions: lint + test + build image. Chi tiết trong ADR-001. |
 | "Tại sao không dùng AI để làm UI?" | UI được xây từ design system + component có sẵn accessibility (WCAG 2.1 AA), kiểm tra bằng axe. AI tạo UI dễ ra "AI aesthetic" và thiếu trạng thái lỗi/rỗng. |
+| "Làm sao chứng minh không tải lại trang?" | DevTools → Network → lọc `Fetch/XHR`: mọi điều hướng là XHR, tài liệu `document` chỉ tải 1 lần. React Router + TanStack Query. |
+| "Hệ thống có phụ thuộc PostgreSQL không?" | Tầng nghiệp vụ độc lập: chỉ dùng ORM + kiểu portable (`JSON` thay vì `JSONB`, `ILIKE` thay vì `pg_trgm`). Ngoại lệ duy nhất là `SELECT ... FOR UPDATE` cho khoá bản ghi, cô lập trong 2 service. |
+| "URL trông thế nào?" | Slug đọc được: `/san-pham/bat-trangg-men-lam`, `/ho-gia-dinh/xuong-gom-men-lam`; QR dùng `/p/{token}` để đổi tên không hỏng QR; đổi slug trả 301. |
+| "Nhập liệu thông minh ở đâu?" | Autocomplete tên hộ/sản phẩm, tự điền phân loại + đơn vị khi chọn sản phẩm mẫu, format giá `150.000 ₫`, ngày `dd/mm/yyyy`, slug tự sinh. Lỗi hiện dưới từng trường. |
+| "Thiết kế có bản sắc gì?" | Palette lấy từ vật liệu gốm Bát Tràng (men lam, đất nung, trắng ngà), tiêu đề serif + thân bài Be Vietnam Pro, đường viền men lam làm dấu nhận dạng. Xem `docs/design-system.md`. |
 
 ## 8. Phân vai khi demo
 
@@ -145,3 +163,4 @@ Chuẩn bị trước: 3 tab đã đăng nhập sẵn, đúng trình duyệt, m�
 | Ngày | Thay đổi | Người |
 |---|---|---|
 | 2026-11-16 | Phiên bản 1.0: kịch bản A (domain) + B (offline), bẫy thường gặp, câu hỏi dự kiến | Nhóm |
+| 2026-11-16 | Phiên bản 1.1 (theo rubric): thêm §4.1 bốn thao tác nhỏ (autocomplete, Network không reload, URL slug, bản sắc) + 6 câu hỏi rubric | Nhóm |
