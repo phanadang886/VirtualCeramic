@@ -62,6 +62,26 @@ Mỗi dòng có **số** và **lệnh tạo ra phán quyết**. Dòng có số m
 
 ---
 
+## Hạ tầng & triển khai (bắt buộc)
+
+Các quy tắc này kiểm tra thủ công hoặc bằng lệnh shell — chưa tự động hoá vì cần hạ tầng thật (máy ảo, DNS, cert).
+
+| Quy tắc | Kiểm tra bằng | Khi nào |
+|---------|---------------|---------|
+| `PUBLIC_BASE_URL` là URL https của tên miền (chế độ A) hoặc IP LAN (chế độ B) — **không bao giờ `localhost`** khi sinh QR | đọc `.env` + **quét QR bằng điện thoại thật** | trước buổi thi |
+| `client_max_body_size` ở Nginx ≥ trần upload (12m) | `nginx -t` + thử upload 11MB | mỗi lần đổi Nginx |
+| PostgreSQL không được map port ra host | `docker ps` không có `0.0.0.0:5432` | mỗi lần đổi compose |
+| Chỉ mở 80/443 ra internet (thêm 22 cho SSH) | `ufw status` + quét cổng từ máy khác | trước buổi thi |
+| `/api/auth/login` rate limit ≤ 5 lần/phút/IP | thử 10 lần sai mật khẩu liên tiếp | mỗi lần đổi Nginx |
+| Cookie `secure=true` khi HTTPS, `false` khi demo offline | xem header `Set-Cookie` trong DevTools | mỗi lần đổi môi trường |
+| Chứng thư TLS còn hạn ≥ 7 ngày | `certbot certificates` | hằng tuần |
+| Không bật HSTS trước khi domain ổn định | đọc response header | mỗi lần đổi Nginx |
+| Không secret trong repo hoặc trong ảnh Docker | `gitleaks dir . --redact` + đọc `Dockerfile` | mỗi PR |
+| `.env` không được commit | `git ls-files .env` phải rỗng | mỗi PR |
+| Demo offline dùng được khi mạng chết | `docker compose -f deploy/docker-compose.offline.yml up` | trước buổi thi |
+
+---
+
 ## Measured, not yet enforced (ratchet)
 
 Đo một lần khi có code rồi ghi vào đây. Mọi check so với giá trị đã ghi, không so với mơ ước. Số tốt lên thì cập nhật; số tụt xuống thì đó là phát hiện.
@@ -152,3 +172,4 @@ Không phải kiểm tra tự động, nhưng là đường đỏ về mặt ngh
 | Ngày | Thay đổi | Người |
 |------|----------|------|
 | 2026-11-16 | Phiên bản đầu. Floor + 4 chiều kiểm tra (coverage, security, perf, a11y) | Nhóm |
+| 2026-11-16 | Thêm ràng buộc hạ tầng: `PUBLIC_BASE_URL`, port mở, rate limit, cookie secure, cert hạn, `.env` | Nhóm |

@@ -219,10 +219,11 @@ Buyer xem timeline: công đoạn nào xong, lúc nào, ai cập nhật, ảnh m
 
 **Ràng buộc đã chốt:**
 - Nhóm 3 người; hạn nộp khoảng 4 tuần kể từ 2026-11-16 → target **2026-12-14** (cần xác nhận ngày chính xác)
-- Công nghệ tự do chọn (theo đề bài)
+- Công nghệ tự do chọn (theo đề bài) — đã chốt tại `docs/decisions/ADR-001-stack.md`
 - Quản lý mã nguồn trên **GitHub** (repo private, 3 người cùng đẩy)
 - Demo trực tiếp tại buổi thi vấn đáp, không dùng slide
 - Demo chạy trên **máy cá nhân của thành viên nhóm** → phải chạy được cả khi mạng yếu hoặc không có mạng
+- Có **tên miền + HTTPS** cho bản demo chính; bản demo phụ trên máy cá nhân dùng đường dẫn giả nội bộ (`docs/decisions/ADR-002-nginx-public-dns.md`)
 - Không phụ thuộc dịch vụ trả phí (API key, hosting)
 
 **Lịch gợi ý (4 tuần):**
@@ -286,6 +287,7 @@ Buyer xem timeline: công đoạn nào xong, lúc nào, ai cập nhật, ảnh m
 | 2026-11-16 | 1.1 | Thêm F12 theo dõi tiến độ đơn hàng; mở rộng F11 cho artisan gửi bài PR chờ duyệt | Nhóm |
 | 2026-11-16 | 1.2 | Chốt deadline 4 tuần, dùng GitHub, demo trên máy cá nhân, không tích hợp thanh toán thật; thêm lịch 4 tuần ở §6 | Nhóm |
 | 2026-11-16 | 1.3 | Chốt domain làng gốm Bát Tràng; thêm `docs/domain-battrang.md`; đồng bộ công đoạn gốm ở F4/F12 | Nhóm |
+| 2026-11-16 | 1.4 | Chốt stack (ADR-001) + Nginx/tên miền công khai (ADR-002); thêm `docs/architecture.md`, `docs/api.md`, `docs/demo-script.md`, `tasks/todo.md`; §6 cập nhật demo qua domain + phương án offline | Nhóm |
 
 ## 10. Backlog V2 (chưa làm)
 

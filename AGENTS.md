@@ -7,8 +7,21 @@ Dự án web cho Ban quản lý làng nghề (INT3306, team 3, demo trực tiế
 - Chi tiết domain (sản phẩm, quy trình làm gốm, men, từ vựng, dữ liệu mẫu, cảnh báo pháp lý): `docs/domain-battrang.md`
 - Khi sinh nội dung mẫu: tên xưởng dùng tên giả, ảnh dùng ảnh tự chụp hoặc CC0 — không dùng tên/ảnh thật khi chưa được phép
 
-## Stack
-- (chưa chốt — điền sau khi team chọn)
+## Stack (đã chốt — `docs/decisions/ADR-001-stack.md`)
+- **Backend:** FastAPI + Uvicorn · SQLAlchemy 2 (async) + asyncpg · Alembic · Pydantic v2 · PyJWT + argon2 · Pillow · qrcode
+- **Frontend:** React + Vite + TypeScript · Tailwind + shadcn/ui · TanStack Query · React Router · Zod · react-leaflet
+- **Hạ tầng:** PostgreSQL 16 · Docker Compose · Nginx + DNS công khai + HTTPS (`docs/decisions/ADR-002-nginx-public-dns.md`)
+- **Test/lint:** pytest + httpx + pytest-cov · ruff · GitHub Actions (sau)
+- **Cấu trúc:** `backend/` · `frontend/` · `deploy/` · `docs/` · `tasks/` · `scripts/`
+- Không tự đổi stack. Muốn đổi → mở ADR mới, không sửa ADR cũ.
+
+## Quy tắc bắt buộc khi code
+- **Cấm lazy load** trong SQLAlchemy async — luôn `selectinload`/`joinedload`, nếu không sẽ dính `MissingGreenlet`
+- **Mọi chuyển trạng thái** đi qua service, không `UPDATE status` trực tiếp trong router
+- **Mọi thao tác đổi trạng thái** nằm trong transaction, khoá dòng với `SELECT ... FOR UPDATE` khi cần
+- **`PUBLIC_BASE_URL`** là nguồn duy nhất cho URL trong QR — không hardcode domain
+- **Ảnh**: resize bằng Pillow trong `run_in_threadpool`, tên file do server sinh, kiểm tra magic bytes
+- **Hai nguồn sự thật không được lệch:** `docs/api.md` (thiết kế) và OpenAPI sinh từ FastAPI (code). Khi lệch → sửa code theo `docs/api.md`
 
 ## Constraints
 - **Đọc `CONSTRAINTS.md` trước khi viết code. Không hạ tiêu chuẩn để cho một thay đổi pass.**
@@ -54,7 +67,17 @@ Dự án web cho Ban quản lý làng nghề (INT3306, team 3, demo trực tiế
 - Mỗi PR gắn với 1 mục `tasks/todo.md` và 1 tiêu chí `docs/requirements.md` §7
 - Khi agent tạo commit/PR phải nêu: đổi file nào, vì sao, cách kiểm chứng
 
-## Tham chiếu
+## Tham chiếu tài liệu (đọc theo thứ tự khi làm việc mới)
+1. `docs/requirements.md` — cần làm gì (§4), tiêu chí nghiệm thu (§7), thay đổi đã chốt (§8, §9)
+2. `docs/architecture.md` — ERD, máy trạng thái, luồng, quy tắc concurrency
+3. `docs/api.md` — contract endpoint
+4. `docs/domain-battrang.md` — ngữ cảnh nghiệp vụ gốm, dữ liệu mẫu
+5. `docs/demo-script.md` — kịch bản demo + câu hỏi dự kiến
+6. `docs/decisions/ADR-00N-*.md` — quyết định đã chốt, không sửa lịch sử
+7. `CONSTRAINTS.md` — ngưỡng chất lượng
+8. `tasks/todo.md` — việc đang làm
+
+## Tham chiếu kỹ thuật
 - Skill domain references: `.opencode/references/*.md`
 - Agent personas: `.opencode/agents/*.md` (code-reviewer, security-auditor, test-engineer, web-performance-auditor)
 - Agents orchestration doc: `.opencode/references/agents.md`
