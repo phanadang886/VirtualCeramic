@@ -1,83 +1,84 @@
-# Task list — vCraft
+# Task list — vCraft (4 tuần)
 
-Nguồn: `docs/requirements.md` §4 (12 tính năng) và §7 (11 tiêu chí nghiệm thu).
-Cột **Phụ trách** để trống — nhóm tự chia khi bắt đầu code.
+Bản theo dõi chính: **`tasks/phan-cong-4-tuan.xlsx`** (có dropdown trạng thái + dashboard).
+File này là bản đọc nhanh trong repo — cùng nội dung, cùng ID task.
 
-Cách dùng: mỗi PR phải gắn với 1 mục ở đây và 1 tiêu chí ở `docs/requirements.md` §7 (xem `AGENTS.md` → Quy trình Git).
+Trạng thái: `Chưa làm` · `Đang làm` · `Đang chờ` · `Hoàn thành` · `Bỏ (đã cắt)`.
+Định nghĩa Hoàn thành: PR merged + test pass + demo được + có link bằng chứng.
 
-## Tuần 1 — Nền
+## Tuần 1
 
-| ID | Việc | Phụ trách | Tiêu chí §7 | Trạng thái |
-|---|---|---|---|---|
-| T1.1 | `git init`, remote GitHub, `.gitignore`, `.env.example`, Makefile | | — | [x] |
-| T1.2 | Chốt tên miền, DNS, tạo repo GitHub | | — | [ ] |
-| T1.3 | Dựng compose: postgres + api + web; `make up`, `make seed` | | — | [ ] |
-| T1.4 | Model DB đầy đủ theo ERD (`docs/architecture.md` §4) + Alembic migration đầu | | — | [ ] |
-| T1.5 | Chốt `/api` contract → FastAPI sinh `/openapi.json` → `openapi-typescript` sinh type TS | | — | [ ] |
-| T1.6 | Auth: JWT cookie httpOnly, argon2, dependency `get_current_user`, phân quyền 3 vai trò | | dòng 1 | [ ] |
-| T1.7 | Cấu hình Nginx + HTTPS + `PUBLIC_BASE_URL` + QR base URL | | — | [ ] |
-| T1.8 | Script seed dữ liệu Bát Tràng (5 hộ, 40-60 sản phẩm, 4 đơn, 5 ghim, 4 tin) | | — | [ ] |
-| T1.9 | Design tokens (`design-tokens.ts`, `tailwind.config.ts`, font Playfair + Be Vietnam Pro subset vietnamese) theo `docs/design-system.md` | | — | [ ] |
-| T1.10 | Áp design system vào khung UI: layout, nav, button, card, 4 trạng thái | | — | [ ] |
-| T1.11 | Test độc lập CSDL: tạo schema + CRUD cơ bản trên SQLite | | — | [ ] |
-| T1.12 | Ghi §12 pattern + quy ước code vào `docs/architecture.md` (đã có) và thống nhất với nhóm | | — | [x] |
+| ID | Việc | Phụ trách | Hỗ trợ | Tiêu chí xong | Ưu tiên | Deadline | Trạng thái |
+|---|---|---|---|---|---|---|---|
+| T1.1 | Repo GitHub, .gitignore, .gitattributes | Đông | — | `git push` thành công, 3 người clone được | Must | 2026-11-18 | Chưa làm |
+| T1.2 | Docker Compose (db + api + web) | Phan Anh | Đông | `make up` chạy, 3 service healthy | Must | 2026-11-19 | Chưa làm |
+| T1.3 | .env.example + Makefile (up/down/seed/test/logs) | Đông | — | người mới chạy 1 lệnh là có app | Must | 2026-11-19 | Chưa làm |
+| T1.4 | Schema 19 bảng + Alembic migration đầu | Phan Anh | — | `alembic upgrade head` sạch trên DB trống | Must | 2026-11-21 | Chưa làm |
+| T1.5 | Auth: JWT cookie httpOnly, argon2, role dependency | Phan Anh | — | 3 vai trò đăng nhập, sai role bị 403 | Must | 2026-11-21 | Chưa làm |
+| T1.6 | docs/api.md → OpenAPI → type TS cho FE | Phan Anh | Quân | FE gọi /api/auth/me bằng type sinh tự động | Must | 2026-11-23 | Chưa làm |
+| T1.7 | Design tokens + layout + trang đăng nhập/đăng ký | Quân | — | 2 trang chạy, responsive 320/1440 | Must | 2026-11-23 | Chưa làm |
+| T1.8 | Seed data Bát Tràng (5 hộ, 40-60 SP, 4 đơn, 5 ghim, 4 tin) | Đông | — | `make seed` chạy 2 lần không nhân đôi dữ liệu | Must | 2026-11-23 | Chưa làm |
+| T1.9 | Smoke test schema portable (tạo schema + CRUD trên SQLite) | Đông | — | pytest pass — chứng minh độc lập CSDL | Must | 2026-11-23 | Chưa làm |
+| T1.10 | MỐC TUẦN 1 | Cả nhóm | — | `make up` + login 3 vai trò + seed có dữ liệu | Mốc | 2026-11-23 | Chưa làm |
 
-## Tuần 2 — Artisan + Buyer cơ bản
+## Tuần 2
 
-| ID | Việc | Phụ trách | Tiêu chí §7 | Trạng thái |
-|---|---|---|---|---|
-| T2.1 | Hồ sơ xưởng: CRUD + ảnh + chứng nhận | | — | [ ] |
-| T2.2 | Sản phẩm: CRUD + phân loại + tìm kiếm + phân trang | | dòng 9 | [ ] |
-| T2.3 | Pipeline ảnh: Pillow resize 400/1200 WebP + validate magic bytes + ≤10MB | | dòng 10 | [ ] |
-| T2.4 | Nhật ký sản xuất: mốc + ngày + ảnh, template công đoạn dùng chung | | dòng 2 | [ ] |
-| T2.5 | QR: sinh QR từ `PUBLIC_BASE_URL`, trang công khai `/p/{token}` (không cần login) | | dòng 2 | [ ] |
-| T2.6 | Danh mục buyer: lọc theo hộ / phân loại / tìm tên | | dòng 9 | [ ] |
-| T2.7 | Bản đồ: react-leaflet, ghim, popup, tile cache | | dòng 8 | [ ] |
-| T2.8 | Admin duyệt/từ chối hộ + audit log | | dòng 1 | [ ] |
-| T2.9 | Tin cộng đồng: admin đăng trực tiếp, artisan gửi bài chờ duyệt | | dòng 7 | [ ] |
-| T2.10 | F13 nhập liệu: autocomplete hộ/sản phẩm/phân loại, tự điền phân loại + đơn vị, format giá/ngày/điện thoại, lỗi theo field | | — | [ ] |
-| T2.11 | F14 URL: slug sản phẩm/hộ/tin, `/p/{token}` cho QR, SPA fallback, trang 404, 301 khi đổi slug | | — | [ ] |
+| ID | Việc | Phụ trách | Hỗ trợ | Tiêu chí xong | Ưu tiên | Deadline | Trạng thái |
+|---|---|---|---|---|---|---|---|
+| T2.1 | Hồ sơ xưởng CRUD + ảnh + chứng nhận | Phan Anh | — | artisan sửa hồ sơ, trang công khai cập nhật | Must | 2026-11-25 | Chưa làm |
+| T2.2 | Sản phẩm CRUD + lọc + tìm + phân trang | Phan Anh | — | 200 SP lọc/tìm < 1 giây | Must | 2026-11-26 | Chưa làm |
+| T2.3 | Pipeline ảnh: Pillow WebP 400/1200 + magic bytes + ≤10MB | Phan Anh | — | upload 5 ảnh, 1 ảnh lỗi không chặn ảnh khác | Must | 2026-11-27 | Chưa làm |
+| T2.4 | Nhật ký sản xuất + QR + trang /p/{token} | Phan Anh | — | quét điện thoại mở đúng trang, không cần login | Must | 2026-11-28 | Chưa làm |
+| T2.5 | Danh mục UI: lọc hộ/phân loại, tìm, skeleton/empty/error | Quân | — | đủ 4 trạng thái, không cuộn ngang | Must | 2026-11-26 | Chưa làm |
+| T2.6 | Bản đồ + ghim + popup + lazy-load | Quân | — | 5 ghim đúng vị trí, click ra popup | Should | 2026-11-27 | Chưa làm |
+| T2.7 | Upload UI: progress từng ảnh, lỗi riêng từng ảnh | Quân | — | upload 5 ảnh thấy 5 progress | Must | 2026-11-28 | Chưa làm |
+| T2.8 | F13 nhập liệu: autocomplete, tự điền, format giá/ngày, lỗi theo field | Quân | — | gõ 2 ký tự ra gợi ý, chọn bằng bàn phím | Must | 2026-11-29 | Chưa làm |
+| T2.9 | Admin duyệt hộ (F2) + tin cộng đồng (F11) | Đông | Phan Anh | duyệt → đăng nhập được; từ chối có lý do | Must | 2026-11-28 | Chưa làm |
+| T2.10 | Test auth + sản phẩm + upload | Đông | — | pytest pass, coverage dòng mới ≥ 80% | Must | 2026-11-30 | Chưa làm |
+| T2.11 | MỐC TUẦN 2 | Cả nhóm | — | §7 dòng 2, 7, 8, 10 xanh | Mốc | 2026-11-30 | Chưa làm |
 
-## Tuần 3 — Nghiệp vụ lõi
+## Tuần 3
 
-| ID | Việc | Phụ trách | Tiêu chí §7 | Trạng thái |
-|---|---|---|---|---|
-| T3.1 | Máy trạng thái quote (draft→sent→bidding→accepted→in_production→delivered) + `FOR UPDATE` | | dòng 3 | [ ] |
-| T3.2 | Chào giá (1 hộ 1 lần), chấp nhận 1 bid, tạo order + lot | | dòng 3 | [ ] |
-| T3.3 | Theo dõi công đoạn: cập nhật, cấm nhảy cóc, timeline + % hoàn thành | | dòng 4, 5 | [ ] |
-| T3.4 | Admin chia đơn lớn cho nhiều hộ + chặn giao vượt số lượng | | dòng 6 | [ ] |
-| T3.5 | Audit log cho mọi chuyển trạng thái | | — | [ ] |
-| T3.6 | Test: unit service + integration API (pytest, httpx) | | — | [ ] |
+| ID | Việc | Phụ trách | Hỗ trợ | Tiêu chí xong | Ưu tiên | Deadline | Trạng thái |
+|---|---|---|---|---|---|---|---|
+| T3.1 | State machine quote + with_for_update() | Phan Anh | — | đi đủ 6 trạng thái, chuyển sai trả 409 | Must | 2026-12-02 | Chưa làm |
+| T3.2 | Bidding (1 hộ 1 lần) + accept 1 bid + tạo order/lot | Phan Anh | — | 2 người accept cùng lúc → chỉ 1 thắng | Must | 2026-12-03 | Chưa làm |
+| T3.3 | Công đoạn: cập nhật, cấm nhảy cóc, % hoàn thành | Phan Anh | — | không đánh dấu xong bước 3 khi bước 2 chưa xong | Must | 2026-12-04 | Chưa làm |
+| T3.4 | Admin chia đơn + chặn vượt số lượng | Phan Anh | — | tổng lot ≤ quantity đơn | Must | 2026-12-05 | Chưa làm |
+| T3.5 | Audit log mọi chuyển trạng thái | Phan Anh | — | tra được ai đổi, lúc nào, từ đâu sang đâu | Must | 2026-12-05 | Chưa làm |
+| T3.6 | Luồng buyer UI: tạo đơn, xem bid, chấp nhận | Quân | — | 3 màn hình chạy, không reload | Must | 2026-12-04 | Chưa làm |
+| T3.7 | Timeline công đoạn + % tiến độ | Quân | — | buyer thấy cập nhật ngay sau refresh | Must | 2026-12-05 | Chưa làm |
+| T3.8 | F14: slug, 404, 301, SPA fallback | Quân | Phan Anh | refresh /san-pham/x vẫn mở đúng | Must | 2026-12-06 | Chưa làm |
+| T3.9 | Test state machine — VIẾT TRƯỚC khi code | Đông | — | test fail trước khi Anh code, pass sau | Must | 2026-12-02 | Chưa làm |
+| T3.10 | Endpoint analytics + rà lỗi 500 toàn luồng | Đông | — | không còn 500 ở 11 luồng §7 | Should | 2026-12-07 | Chưa làm |
+| T3.11 | MỐC TUẦN 3 | Cả nhóm | — | §7 dòng 3, 4, 5, 6 xanh | Mốc | 2026-12-07 | Chưa làm |
 
-## Tuần 4 — Hoàn thiện & demo
+## Tuần 4
 
-| ID | Việc | Phụ trách | Tiêu chí §7 | Trạng thái |
-|---|---|---|---|---|
-| T4.1 | Tối ưu: index DB, ảnh 400px, lazy-load route, kiểm tra LCP/CLS | | dòng 9 | [ ] |
-| T4.2 | Accessibility: kiểm tra axe, focus, alt text, tương phản | | — | [ ] |
-| T4.3 | Rà soát lỗi 500 trên toàn bộ luồng | | dòng 11 | [ ] |
-| T4.4 | Nạp đủ dữ liệu mẫu + ảnh (nằm trong repo) | | — | [ ] |
-| T4.5 | `README.md` + `docs/demo-script.md` hoàn chỉnh | | — | [ ] |
-| T4.6 | Chạy kịch bản A và B ít nhất 1 lần mỗi kịch bản | | — | [ ] |
-| T4.7 | Quay video dự phòng 3 phút | | — | [ ] |
-| T4.8 | Kiểm tra checklist trước buổi thi (`docs/demo-script.md` §1) | | — | [ ] |
-| T4.9 | Tập 4 thao tác nhỏ ăn điểm rubric (`docs/demo-script.md` §4.1): autocomplete, Network không reload, URL slug, chi tiết bản sắc | | — | [ ] |
-| T4.10 | Rà 10 kiểm tra hướng rubric trong `CONSTRAINTS.md` | | — | [ ] |
+| ID | Việc | Phụ trách | Hỗ trợ | Tiêu chí xong | Ưu tiên | Deadline | Trạng thái |
+|---|---|---|---|---|---|---|---|
+| T4.1 | Index + EXPLAIN ANALYZE + ghi lại kế hoạch truy vấn | Phan Anh | — | danh mục 200 SP < 2.5 giây | Must | 2026-12-10 | Chưa làm |
+| T4.2 | ETL bulk seed (COPY) + view thống kê SQL | Phan Anh | — | seed 60 SP < 5 giây, idempotent | Should | 2026-12-10 | Chưa làm |
+| T4.3 | Polish UI: 4 trạng thái mọi trang, responsive, bản sắc | Quân | — | checklist design-system §10 pass | Must | 2026-12-12 | Chưa làm |
+| T4.4 | a11y: axe, keyboard, focus, alt text | Quân | — | 0 lỗi critical/serious | Must | 2026-12-12 | Chưa làm |
+| T4.5 | Nginx + TLS + domain + rate limit | Đông | — | https://domain chạy, login 5 lần/phút bị chặn | Must | 2026-12-11 | Chưa làm |
+| T4.6 | Demo script + video dự phòng + checklist trước thi | Đông | — | kịch bản A và B chạy được | Must | 2026-12-13 | Chưa làm |
+| T4.7 | Tập demo 2 lần (kịch bản A và B) | Cả nhóm | — | 10 phút, không vấp | Mốc | 2026-12-13 | Chưa làm |
+| T4.8 | Rà 10 kiểm tra hướng rubric trong CONSTRAINTS.md | Đông | — | tick hết 10 dòng | Must | 2026-12-14 | Chưa làm |
+| T4.9 | MỐC CUỐI | Cả nhóm | — | §7 dòng 9, 11 xanh + demo sẵn sàng | Mốc | 2026-12-14 | Chưa làm |
 
 ## Ngoài V1 (backlog)
 
-Xem `docs/requirements.md` §10. Ưu tiên cao nhất cho hướng nghề, chỉ làm nếu V1 xong sớm:
-
-| ID | Việc | Ghi chú |
-|---|---|---|
-| B1 | GitHub Actions: lint + test + build image | DevOps |
-| B2 | Redis: rate-limit + cache catalog | DevOps/DE |
-| B3 | Prometheus + Grafana (compose profile `ops`) | AIOps |
-| B4 | Locust: 1 script load test + đọc số liệu | AIOps |
-| B5 | Nginx cache nâng cao / CDN | DevOps |
+| ID | Việc | Giá trị | Khi nào |
+|---|---|---|---|
+| B1 | GitHub Actions: lint + test + build image | CI/CD, DevOps | Nếu V1 xong sớm |
+| B2 | Redis: rate-limit + cache catalog | DevOps/DE | Sau V1 |
+| B3 | Prometheus + Grafana (compose profile ops) | AIOps, observability | Sau V1 |
+| B4 | Locust: 1 script load test + đọc số liệu | DevOps/AIOps | Tuần 4 nếu còn thời gian |
+| B5 | Tự gắn nhãn ảnh sản phẩm (MobileNet/CLIP offline) | CV/AI portfolio | V2 hoặc project cá nhân |
 
 ## Lịch sử
 
 | Ngày | Thay đổi | Người |
 |---|---|---|
-| 2026-11-16 | Tạo khung task từ §7, chưa phân công | Nhóm |
+| 2026-11-17 | Sinh lại theo phân công 3 người (Anh/Quân/Đông), 41 task, 4 mốc tuần | Nhóm |
