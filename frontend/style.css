@@ -1,0 +1,751 @@
+:root {
+  color-scheme: light;
+  --men-lam: #263f5b;
+  --men-lam-hover: #314f6c;
+  --dat-nung: #b4552d;
+  --men-ngoc: #6e8f7a;
+  --trang-nga: #eadbc8;
+  --white: #fffefa;
+  --ink: #22201d;
+  --ink-soft: #5c574f;
+  --line: #d9d3c7;
+  --line-on-dark: rgb(247 243 234 / 22%);
+  --danger: #b3261e;
+  --warning: #9a6700;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --header-height: 88px;
+  --auth-panel-width: 520px;
+  --radius-sm: 4px;
+  --radius-md: 12px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgb(34 32 29 / 6%);
+  --shadow-md: 0 4px 16px rgb(34 32 29 / 10%);
+  --font-display: "Times New Roman", Georgia, serif;
+  --font-script: "Segoe Print", "Bradley Hand", cursive;
+  --font-sans: "Be Vietnam Pro", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  overflow-x: clip;
+  scroll-behavior: smooth;
+}
+
+body {
+  position: relative;
+  isolation: isolate;
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: var(--trang-nga);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+label:focus-visible {
+  outline: 2px solid var(--men-lam);
+  outline-offset: 2px;
+}
+
+.page-shell {
+  width: min(100% - var(--space-12), 1440px);
+  min-height: calc(100vh - var(--header-height));
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--auth-panel-width);
+  grid-template-rows: minmax(0, 1fr) auto;
+  column-gap: var(--space-10);
+}
+
+.site-header {
+  width: 100%;
+  min-height: var(--header-height);
+  background: var(--trang-nga);
+  border-bottom: 1px solid var(--line);
+}
+
+.site-header-inner {
+  width: min(100% - var(--space-12), 1440px);
+  min-height: inherit;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+}
+
+.brand-logo {
+  width: 174px;
+  height: 80px;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.header-nav a {
+  text-decoration: none;
+}
+
+.header-nav a:hover {
+  color: var(--men-lam);
+}
+
+.header-help {
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.auth-layout {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: var(--space-8);
+}
+
+.brand-hero {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;
+  min-width: 0;
+  padding-block: var(--space-6);
+  color: var(--men-lam);
+  text-align: center;
+}
+
+.brand-hero h1 {
+  margin: 0;
+  font-family: var(--font-script);
+  font-size: 110px;
+  font-weight: 700;
+  line-height: 0.95;
+}
+
+.brand-hero h1 span {
+  display: block;
+  white-space: nowrap;
+}
+
+.brand-hero-tagline {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.brand-hero-description {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-soft);
+}
+
+.photo-wall {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.photo-wall::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: rgb(253 237 211 / 40%);
+  content: "";
+}
+
+.photo-wall-track {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 200vw;
+  height: 200vh;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  opacity: 0.58;
+  filter: blur(3px);
+  animation: photo-wall-drift 30s linear infinite;
+  will-change: transform;
+}
+
+.photo-wall-sequence {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  overflow: hidden;
+}
+
+.photo-wall img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.auth-panel {
+  position: relative;
+  width: min(100%, var(--auth-panel-width));
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--white) url("assets/bg_login.png") center / cover no-repeat;
+  box-shadow: var(--shadow-sm);
+}
+
+.auth-content {
+  padding: var(--space-8);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--dat-nung);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.auth-heading h2 {
+  margin: var(--space-2) 0 var(--space-1);
+  color: var(--men-lam);
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.auth-heading > p:last-child {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.auth-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: var(--space-6);
+  border-bottom: 1px solid var(--line);
+}
+
+.auth-switch label {
+  position: relative;
+  padding: var(--space-3) var(--space-2);
+  color: var(--ink-soft);
+  cursor: pointer;
+  text-align: center;
+  transition: color 160ms ease-out;
+}
+
+#mode-login:checked + label,
+#mode-register:checked + label {
+  color: var(--men-lam);
+  font-weight: 600;
+}
+
+#mode-login:checked + label::after,
+#mode-register:checked + label::after {
+  position: absolute;
+  right: 20%;
+  bottom: -1px;
+  left: 20%;
+  height: 2px;
+  background: var(--men-lam);
+  content: "";
+}
+
+#mode-login:focus-visible + label,
+#mode-register:focus-visible + label,
+.role-options input:focus-visible + label {
+  outline: 2px solid var(--men-lam);
+  outline-offset: 2px;
+}
+
+.auth-page {
+  display: none;
+  padding-top: var(--space-5);
+  animation: page-arrive 220ms ease-out both;
+}
+
+.auth-switch:has(#mode-login:checked) ~ .auth-pages .login-page,
+.auth-switch:has(#mode-register:checked) ~ .auth-pages .register-page {
+  display: block;
+}
+
+.role-fieldset {
+  min-width: 0;
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  border: 0;
+}
+
+.role-fieldset legend,
+.field > label,
+.field-heading > label {
+  margin-bottom: var(--space-2);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.role-options {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.role-options-login {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.role-options-register {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.role-options label {
+  min-height: 62px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 160ms ease-out, background-color 160ms ease-out;
+}
+
+.role-options label span {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.role-options label small {
+  margin-top: var(--space-1);
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
+.role-options input:checked + label {
+  border-color: var(--men-lam);
+  background: rgb(27 58 107 / 5%);
+  box-shadow: inset 0 0 0 1px var(--men-lam);
+}
+
+.role-options input:checked + label span {
+  color: var(--men-lam);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-4);
+}
+
+.field > label,
+.field-heading > label {
+  display: inline-block;
+}
+
+.field input {
+  width: 100%;
+  min-height: 46px;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  color: var(--ink);
+  transition: border-color 160ms ease-out, box-shadow 160ms ease-out;
+}
+
+.field input::placeholder {
+  color: #817a70;
+}
+
+.field input:focus {
+  border-color: var(--men-lam);
+  box-shadow: 0 0 0 3px rgb(27 58 107 / 10%);
+  outline: 0;
+}
+
+.field-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.field-heading > label {
+  margin-bottom: var(--space-2);
+}
+
+.field-aside,
+.field-hint {
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
+.field-hint {
+  margin-top: var(--space-1);
+}
+
+.workshop-field {
+  display: none;
+}
+
+.register-page:has(#register-artisan:checked) .workshop-field {
+  display: flex;
+}
+
+.form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.check-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink-soft);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.check-label input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--men-lam);
+}
+
+.secure-note {
+  color: var(--men-ngoc);
+  font-size: 10px;
+}
+
+.submit-button {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--men-lam);
+  border-radius: var(--radius-sm);
+  background: var(--men-lam);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 160ms ease-out, border-color 160ms ease-out;
+}
+
+.submit-button:hover {
+  border-color: var(--men-lam-hover);
+  background: var(--men-lam-hover);
+}
+
+.button-arrow {
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.account-prompt {
+  margin: var(--space-4) 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  text-align: center;
+}
+
+.account-prompt label {
+  color: var(--men-lam);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.account-prompt label:hover {
+  text-decoration: underline;
+}
+
+.forgot-password {
+  margin: var(--space-2) 0 0;
+  text-align: center;
+}
+
+.forgot-password button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--men-lam);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.forgot-password button:hover {
+  text-decoration: underline;
+}
+
+.admin-note {
+  margin: var(--space-3) 0 0;
+  color: var(--ink-soft);
+  font-size: 10px;
+  text-align: center;
+}
+
+.prototype-note {
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 10px;
+  text-align: center;
+}
+
+.site-footer {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 10px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes page-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes photo-wall-drift {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 1023px) {
+  .page-shell {
+    width: min(100% - var(--space-8), 760px);
+  }
+
+  .site-header-inner {
+    width: min(100% - var(--space-8), 760px);
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1439px) {
+  .brand-hero h1 {
+    font-size: 80px;
+  }
+}
+
+@media (min-width: 1101px) and (max-width: 1199px) {
+  .brand-hero h1 {
+    font-size: 60px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .page-shell {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand-hero {
+    width: 100%;
+    padding: var(--space-6) var(--space-4) var(--space-3);
+    text-align: center;
+  }
+
+  .brand-hero h1 {
+    font-size: 48px;
+  }
+
+  .auth-layout {
+    justify-content: center;
+    padding-inline: var(--space-4);
+  }
+}
+
+@media (max-width: 767px) {
+  .page-shell {
+    width: min(100% - var(--space-6), 560px);
+  }
+
+  :root {
+    --header-height: 68px;
+  }
+
+  .site-header {
+    min-height: var(--header-height);
+  }
+
+  .site-header-inner {
+    width: min(100% - var(--space-6), 560px);
+  }
+
+  .brand-logo {
+    width: 144px;
+    height: 66px;
+  }
+
+  .header-nav {
+    gap: var(--space-4);
+  }
+
+  .header-nav > a:first-child {
+    display: none;
+  }
+
+  .auth-panel {
+    width: min(100%, var(--auth-panel-width));
+  }
+
+  .auth-content {
+    padding: var(--space-6);
+  }
+
+  .auth-heading h2 {
+    font-size: 34px;
+  }
+
+  .brand-hero h1 {
+    font-size: 32px;
+  }
+
+  .brand-hero-tagline {
+    font-size: 18px;
+  }
+
+  .site-footer {
+    min-height: 52px;
+  }
+}
+
+@media (max-width: 420px) {
+  .page-shell {
+    width: calc(100% - var(--space-4));
+  }
+
+  .site-header-inner {
+    width: calc(100% - var(--space-4));
+  }
+
+  .auth-content {
+    padding: var(--space-5);
+  }
+
+  .brand-hero h1 {
+    font-size: 24px;
+  }
+
+  .role-options {
+    gap: var(--space-1);
+  }
+
+  .role-options label {
+    padding-inline: var(--space-2);
+  }
+
+  .role-options label span {
+    font-size: 10px;
+  }
+
+  .role-options label small {
+    font-size: 9px;
+  }
+
+  .site-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-1);
+    padding-block: var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo-wall-track {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

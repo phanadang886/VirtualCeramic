@@ -2,10 +2,171 @@
 <html lang="vi">
   <head>
     <meta charset="utf-8" />
-    <title>vCraft — me may bel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Không gian số kết nối nghệ nhân Bát Tràng với những người yêu gốm."
+    />
+    <title>vCraft — Tinh hoa làng nghề</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>vCraft</h1>
-    <p>Khung frontend mẫu, thg Abui tự sửa file này nhé ku <a href="http://localhost:8000/health">API health</a>.</p>
+    <div class="photo-wall" aria-hidden="true">
+      <div class="photo-wall-track">
+        <div class="photo-wall-sequence">
+          <img src="assets/1.jpg" alt="" width="736" height="920" />
+          <img src="assets/2.jpg" alt="" width="735" height="980" />
+          <img src="assets/3.jpg" alt="" width="564" height="846" />
+          <img src="assets/4.jpg" alt="" width="720" height="1280" />
+          <img src="assets/5.jpg" alt="" width="736" height="1107" />
+        </div>
+        <div class="photo-wall-sequence">
+          <img src="assets/1.jpg" alt="" width="736" height="920" />
+          <img src="assets/2.jpg" alt="" width="735" height="980" />
+          <img src="assets/3.jpg" alt="" width="564" height="846" />
+          <img src="assets/4.jpg" alt="" width="720" height="1280" />
+          <img src="assets/5.jpg" alt="" width="736" height="1107" />
+        </div>
+        <div class="photo-wall-sequence">
+          <img src="assets/1.jpg" alt="" width="736" height="920" />
+          <img src="assets/2.jpg" alt="" width="735" height="980" />
+          <img src="assets/3.jpg" alt="" width="564" height="846" />
+          <img src="assets/4.jpg" alt="" width="720" height="1280" />
+          <img src="assets/5.jpg" alt="" width="736" height="1107" />
+        </div>
+        <div class="photo-wall-sequence">
+          <img src="assets/1.jpg" alt="" width="736" height="920" />
+          <img src="assets/2.jpg" alt="" width="735" height="980" />
+          <img src="assets/3.jpg" alt="" width="564" height="846" />
+          <img src="assets/4.jpg" alt="" width="720" height="1280" />
+          <img src="assets/5.jpg" alt="" width="736" height="1107" />
+        </div>
+      </div>
+    </div>
+    <header class="site-header" id="top">
+      <div class="site-header-inner">
+        <a class="wordmark" href="#top" aria-label="vCraft, về đầu trang">
+          <img class="brand-logo" src="assets/logo.png" alt="vCraft — làng gốm Bát Tràng" width="174" height="80" />
+        </a>
+        <nav class="header-nav" aria-label="Điều hướng chính">
+          <a href="#auth-title">Đăng nhập</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="page-shell">
+        <section class="brand-hero" aria-labelledby="brand-title">
+          <h1 id="brand-title"><span>BÁT</span><span>TRÀNG</span></h1>
+          <p class="brand-hero-tagline">Hồn đất Việt – Sắc men ngàn đời</p>
+          <p class="brand-hero-description">Khám phá tinh hoa gốm sứ truyền thống qua từng tác phẩm.</p>
+        </section>
+
+      <main class="auth-layout">
+        <section class="auth-panel" aria-labelledby="auth-title">
+          <div class="auth-content">
+            <div class="auth-heading">
+              <p class="eyebrow">Chào mừng đến với vCraft</p>
+              <h2 id="auth-title">Bắt đầu hành trình</h2>
+              <p>Đăng nhập hoặc tạo tài khoản để tiếp tục.</p>
+            </div>
+
+            <fieldset class="auth-switch">
+              <legend class="visually-hidden">Chọn hình thức</legend>
+              <input class="visually-hidden" type="radio" name="auth-mode" id="mode-login" aria-label="Đăng nhập" checked />
+              <label for="mode-login">Đăng nhập</label>
+              <input class="visually-hidden" type="radio" name="auth-mode" id="mode-register" aria-label="Tạo tài khoản" />
+              <label for="mode-register">Tạo tài khoản</label>
+            </fieldset>
+
+            <div class="auth-pages">
+              <section class="auth-page login-page" id="login-panel">
+                <form class="auth-form">
+                  <fieldset class="role-fieldset">
+                    <legend>Bạn tham gia với vai trò</legend>
+                    <div class="role-options role-options-login">
+                      <input class="visually-hidden" type="radio" name="login-role" id="login-artisan" checked />
+                      <label for="login-artisan"><span>Hộ gia đình</span><small>Nghệ nhân</small></label>
+                      <input class="visually-hidden" type="radio" name="login-role" id="login-buyer" />
+                      <label for="login-buyer"><span>Khách hàng</span><small>Người yêu gốm</small></label>
+                      <input class="visually-hidden" type="radio" name="login-role" id="login-admin" />
+                      <label for="login-admin"><span>Quản trị viên</span><small>Ban quản lý</small></label>
+                    </div>
+                  </fieldset>
+
+                  <div class="field">
+                    <label for="login-email">Email</label>
+                    <input id="login-email" name="email" type="email" placeholder="ten@example.com" autocomplete="email" />
+                  </div>
+                  <div class="field">
+                    <div class="field-heading">
+                      <label for="login-password">Mật khẩu</label>
+                      <span class="field-aside">Tối thiểu 8 ký tự</span>
+                    </div>
+                    <input id="login-password" name="password" type="password" placeholder="Nhập mật khẩu" autocomplete="current-password" />
+                  </div>
+                  <div class="form-options">
+                    <label class="check-label" for="remember-me">
+                      <input id="remember-me" name="remember" type="checkbox" />
+                      <span>Ghi nhớ đăng nhập</span>
+                    </label>
+                    <span class="secure-note">Bảo mật tài khoản</span>
+                  </div>
+                  <button class="submit-button" type="button">
+                    <span>Đăng nhập</span><span class="button-arrow" aria-hidden="true">↗</span>
+                  </button>
+                </form>
+                <p class="account-prompt">Chưa có tài khoản? <label for="mode-register">Đăng ký ngay</label></p>
+                <p class="forgot-password"><button type="button">Quên mật khẩu?</button></p>
+                <p class="admin-note">Tài khoản quản trị được cấp bởi Ban quản lý làng nghề.</p>
+              </section>
+
+              <section class="auth-page register-page" id="register-panel">
+                <form class="auth-form">
+                  <fieldset class="role-fieldset">
+                    <legend>Tạo tài khoản dành cho</legend>
+                    <div class="role-options role-options-register">
+                      <input class="visually-hidden" type="radio" name="register-role" id="register-artisan" checked />
+                      <label for="register-artisan"><span>Hộ gia đình</span><small>Nghệ nhân</small></label>
+                      <input class="visually-hidden" type="radio" name="register-role" id="register-buyer" />
+                      <label for="register-buyer"><span>Khách hàng</span><small>Người yêu gốm</small></label>
+                    </div>
+                  </fieldset>
+
+                  <div class="field">
+                    <label for="register-name">Họ và tên</label>
+                    <input id="register-name" name="name" type="text" placeholder="Tên của bạn" autocomplete="name" />
+                  </div>
+                  <div class="field workshop-field">
+                    <label for="workshop-name">Tên hộ / xưởng</label>
+                    <input id="workshop-name" name="workshop_name" type="text" placeholder="Ví dụ: Xưởng gốm nhà mình" autocomplete="organization" />
+                    <span class="field-hint">Tài khoản nghệ nhân sẽ chờ Ban quản lý duyệt.</span>
+                  </div>
+                  <div class="field">
+                    <label for="register-email">Email</label>
+                    <input id="register-email" name="email" type="email" placeholder="ten@example.com" autocomplete="email" />
+                  </div>
+                  <div class="field">
+                    <label for="register-password">Tạo mật khẩu</label>
+                    <input id="register-password" name="password" type="password" placeholder="Ít nhất 8 ký tự" autocomplete="new-password" />
+                  </div>
+                  <button class="submit-button" type="button">
+                    <span>Tạo tài khoản</span><span class="button-arrow" aria-hidden="true">↗</span>
+                  </button>
+                </form>
+                <p class="account-prompt">Đã có tài khoản? <label for="mode-login">Đăng nhập</label></p>
+                <p class="admin-note">Tài khoản quản trị được cấp bởi Ban quản lý làng nghề.</p>
+              </section>
+            </div>
+
+            <p class="prototype-note">Giao diện mẫu · Chức năng tài khoản sẽ kết nối với hệ thống vCraft.</p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>© 2026 vCraft · Làng gốm Bát Tràng</span>
+        <span>Giữ nghề xưa, kể chuyện mới.</span>
+      </footer>
+    </div>
   </body>
 </html>
